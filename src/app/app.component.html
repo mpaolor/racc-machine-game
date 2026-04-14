@@ -1,0 +1,25 @@
+<div class="game-container">
+  <div class="slot-machine">
+    @for (reel of reels(); track $index) {
+      <div class="reel-window">
+        <div class="symbol-strip" 
+             [style.transform]="'translateY(-' + reel.offset + 'px)'"
+             [class.animate]="isSpinning()">
+          
+          @for (set of [].constructor(200); track $index) {
+            @for (s of symbols; track s) {
+              <div class="symbol-card">
+                 <span class="symbol-icon">{{ s }}</span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="controls">
+    <p class="status-text">{{ message() }}</p>
+    <button #spinbutton (click)="spin()" [disabled]="isSpinning()">SPIN</button>
+  </div>
+</div>
