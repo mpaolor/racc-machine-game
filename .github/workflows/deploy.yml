@@ -26,8 +26,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        # Replace YourUsername and YourRepoName with your actual info
-        run: npm run build -- --configuration production --base-href "https://YourUsername.github.io/YourRepoName/"
+        run: npm run build -- --configuration production --base-href "https://mpaolor.github.io/racc-machine-game/"
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
