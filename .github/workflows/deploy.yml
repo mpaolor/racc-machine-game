@@ -1,0 +1,40 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main  # Runs every time you push to main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build_site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20 # Angular 21 works great with Node 20 or 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        # Replace YourUsername and YourRepoName with your actual info
+        run: npm run build -- --configuration production --base-href "https://YourUsername.github.io/YourRepoName/"
+
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Match this to your dist path! 
+          # Check your dist folder name after a local build
+          path: dist/slot-machine-game/browser/
+
+      - name: Deploy
+        uses: actions/deploy-pages@v4
