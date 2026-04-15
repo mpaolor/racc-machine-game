@@ -7,30 +7,19 @@ import { Component, ElementRef, afterNextRender, signal, viewChild } from '@angu
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  // Get the reference to the button using the signal-based viewChild
-  spinButton = viewChild<ElementRef<HTMLButtonElement>>('spinbutton');
-
-  symbols = ['🍒', '🍋', '💎', '7️⃣', '🔔', '🍇'];
-  symbolHeight = 100;
+  spinButton = viewChild<ElementRef<HTMLButtonElement>>('spinButton');
   
-  reels = signal([
-    { offset: 0, finalResult: 0 },
-    { offset: 0, finalResult: 0 },
-    { offset: 0, finalResult: 0 }
-  ]);
-  
+  symbols = ['🍒', '🍋', '🍇', '🍊', '🔔', '💎'];
+  // Stores the index of the symbol shown in each of the 3 reels
+  reels = signal<number[]>([0, 1, 2]); 
   isSpinning = signal(false);
-  message = signal('Good Luck!');
+  message = signal('Press Space or Click to Spin!');
 
   constructor() {
-    // This runs only once, after the app is rendered in the browser
+    // Initial focus so user can play immediately
     afterNextRender(() => {
-      this.focusSpinButton();
+      this.spinButton()?.nativeElement.focus();
     });
-  }
-
-  focusSpinButton() {
-    this.spinButton()?.nativeElement.focus();
   }
 
   spin() {
@@ -39,41 +28,29 @@ export class AppComponent {
     this.isSpinning.set(true);
     this.message.set('Spinning...');
 
-    this.reels.update(currentReels => 
-       currentReels.map((reel, index) => {
-        const selectedSymbolIndex = Math.floor(Math.random() * this.symbols.length);
-        
-        // DISTANCE MATH:
-        // We take the current offset and add a massive "jump" to it.
-        // This ensures the wheel always travels at least 15-25 full rotations.
-        const minRotationDistance = (15 + (index * 5)) * this.symbols.length * this.symbolHeight;
-        const extraDistance = selectedSymbolIndex * this.symbolHeight;
-        
-        // The new offset must also account for the current position so it lands correctly
-        const currentPositionInCycle = reel.offset % (this.symbols.length * this.symbolHeight);
-        const distanceToMove = minRotationDistance + extraDistance - currentPositionInCycle;
+    // 1. Determine results immediately (The "Source of Truth")
+    const newResults = [
+      Math.floor(Math.random() * this.symbols.length),
+      Math.floor(Math.random() * this.symbols.length),
+      Math.floor(Math.random() * this.symbols.length)
+    ];
 
-        return {
-          finalResult: selectedSymbolIndex,
-          offset: reel.offset + distanceToMove
-        };
-      })
-    );
-
+    // 2. Wait for the "Fake" animation to finish
     setTimeout(() => {
+      this.reels.set(newResults);
       this.isSpinning.set(false);
-      this.checkWin();
+      this.checkWin(newResults);
 
-      // to ensure the button is focused after the spin animation completes, we use another timeout
+      // 3. Refocus the button so Spacebar works for the next spin
       setTimeout(() => {
-        this.focusSpinButton();
-      }, 1);
-    }, 1050); 
+        this.spinButton()?.nativeElement.focus();
+      }, 0);
+    }, 1200); // This duration matches the feel of the spin
   }
 
-  checkWin() {
-    const results = this.reels().map(r => r.finalResult);
-    if (results.every(val => val === results[0])) {
+  checkWin(results: number[]) {
+    // Check if all three symbols are the same
+    if (results[0] === results[1] && results[1] === results[2]) {
       this.message.set('💰 BIG WIN! 💰');
     } else {
       this.message.set('Try Again!');

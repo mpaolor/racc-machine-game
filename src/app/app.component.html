@@ -1,25 +1,36 @@
 <div class="game-container">
-  <div class="slot-machine">
-    @for (reel of reels(); track $index) {
+  <h1>Racc Slot Machine</h1>
+
+  <div class="reels-container">
+    @for (symbolIndex of reels(); track $index) {
       <div class="reel-window">
-        <div class="symbol-strip" 
-             [style.transform]="'translateY(-' + reel.offset + 'px)'"
-             [class.animate]="isSpinning()">
-          
-          @for (set of [].constructor(200); track $index) {
-            @for (s of symbols; track s) {
-              <div class="symbol-card">
-                 <span class="symbol-icon">{{ s }}</span>
-              </div>
-            }
+        <div class="symbol-holder">
+          @if (isSpinning()) {
+            <div class="blur-strip">
+              @for (s of symbols; track $index) {
+                <div class="symbol-card">{{ s }}</div>
+              }
+              <div class="symbol-card">{{ symbols[0] }}</div>
+            </div>
+          } @else {
+            <div class="static-symbol">
+              {{ symbols[symbolIndex] }}
+            </div>
           }
         </div>
       </div>
     }
   </div>
 
-  <div class="controls">
-    <p class="status-text">{{ message() }}</p>
-    <button #spinbutton (click)="spin()" [disabled]="isSpinning()">SPIN</button>
+  <div class="ui-section">
+    <h2 [class.win-text]="message().includes('WIN')">{{ message() }}</h2>
+    
+    <button 
+      #spinButton 
+      (click)="spin()" 
+      [disabled]="isSpinning()"
+      [class.active]="!isSpinning()">
+      {{ isSpinning() ? 'SPINNING...' : 'SPIN' }}
+    </button>
   </div>
 </div>
