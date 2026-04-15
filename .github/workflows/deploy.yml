@@ -34,7 +34,7 @@ jobs:
         with:
           # Match this to your dist path! 
           # Check your dist folder name after a local build
-          path: dist/slot-machine-game/browser/
+          path: dist/racc-machine-game/browser/
 
       - name: Deploy
         uses: actions/deploy-pages@v4
