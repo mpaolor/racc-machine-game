@@ -1,159 +1,290 @@
+/* --- Pastel Blue Modern Theme --- */
 :host {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  --accent: #a2d2ff;      
+  --accent-dark: #4895ef; /* Swapped for a more vivid action blue */
+  --bg-dark: #1e293b;     /* Slightly softer slate for the main spin button */
+  --glass: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+}
+
+.modern-app-wrapper {
   min-height: 100vh;
-  font-family: sans-serif;
-  background-color: #2c3e50;
-  color: white;
-}
-
-.input-group > .input {
-  height: 3rem;
-  width: 100%;
-  display: block;
-  margin-bottom: 2rem;
-}
-
-.game-container {
-  text-align: center;
-  background: #34495e;
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.prize-display>img {
-  display: block;
-}
-
-.reels-container {
-  display: flex;
-  gap: 1rem;
-  margin: 2rem 0;
-  justify-content: center;
-}
-
-.reel-window {
-  width: 100px;
-  height: 100px;
-  background: white;
-  border: 5px solid #f1c40f;
-  border-radius: 10px;
-  overflow: hidden;
-  /* Clips the blur-strip */
-  position: relative;
-}
-
-.symbol-card,
-.static-symbol {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
-  /* Adjust to match your reel height */
+  background-color: #f8fbff; 
+  position: relative;
+  overflow: hidden;
+}
+
+.ambient-blob {
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, var(--accent) 0%, #bde0fe 50%, transparent 100%);
+  filter: blur(80px);
+  border-radius: 50%;
+  opacity: 0.4;
+  top: -20%;
+  right: -10%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- Auth Card --- */
+.auth-card {
+  position: relative;
+  z-index: 10;
+  background: var(--glass);
+  backdrop-filter: blur(25px);
+  padding: 40px;
+  border-radius: 32px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
   width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
-.symbol-card img,
-.static-symbol img {
-  max-width: 80%;
-  max-height: 70px;
-  /* Keeps flags consistent even if they are different shapes */
-  object-fit: contain;
-  /* Prevents stretching */
-  border-radius: 2px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+.auth-icon { font-size: 3rem; margin-bottom: 20px; }
+.auth-header h2 { font-weight: 800; color: var(--text-primary); margin: 0; }
+.auth-header p { color: var(--text-secondary); margin: 10px 0 30px; line-height: 1.5; }
 
-  /* Modern look: slightly sharp edges or a thin border */
-  border: 1px solid #eee;
+.modern-input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px solid #e2e8f0;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
-/* Suspenseful stop: a slight bounce when the flag lands */
-.static-symbol img {
-  animation: landBounce 0.3s ease-out;
+.modern-input:focus {
+  outline: none;
+  border-color: var(--accent-dark);
+  box-shadow: 0 0 0 4px rgba(72, 149, 239, 0.1);
 }
 
-@keyframes landBounce {
-  0% {
-    transform: scale(0.8);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
+/* IMPROVED: Initialize Service Button */
+.primary-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent-dark) 0%, #3f37c9 100%);
+  color: #fff;
+  border: none;
+  padding: 18px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: 0 10px 20px -5px rgba(63, 55, 201, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
-/* The Fake Loop Animation */
-.blur-strip {
+.primary-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px -5px rgba(63, 55, 201, 0.4);
+}
+
+.primary-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.primary-btn:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.legal-notice {
+  margin-top: 25px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* --- Game Layout --- */
+.game-layout {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 460px;
+  text-align: center;
+}
+
+.chip {
+  display: inline-block;
+  background: var(--accent-dark);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin: 0 0 30px;
+}
+
+h1 span { color: var(--accent-dark); }
+
+.machine-chassis {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  padding: 20px;
+  border-radius: 40px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+}
+
+.reels-grid {
+  display: flex;
+  gap: 12px;
+}
+
+.modern-reel {
+  flex: 1;
+  background: #fff;
+  aspect-ratio: 1/1.3;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.reel-inner {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Spinning Animation --- */
+.blur-animation {
   display: flex;
   flex-direction: column;
-  animation: spinLoop 0.15s infinite linear;
-  filter: blur(3px);
+  animation: scrollLoop 0.2s linear infinite;
 }
 
-@keyframes spinLoop {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(-600px);
-  }
-
-  /* height (100) * number of symbols (6) */
+.symbol-cell {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* A nice "bounce" when the symbol lands */
-.static-symbol {
-  animation: landBounce 0.2s ease-out;
+.symbol-cell img {
+  max-width: 70%;
+  filter: blur(1px) opacity(0.5);
 }
 
-@keyframes landBounce {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+@keyframes scrollLoop {
+  from { transform: translateY(0); }
+  to { transform: translateY(-500px); }
 }
 
-button {
-  padding: 1rem 3rem;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  background: #f1c40f;
+.final-symbol img {
+  max-width: 75%;
+  animation: springDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes springDrop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- Action Zone --- */
+.message-display {
+  margin-bottom: 25px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  min-height: 1.2em;
+}
+
+.success { 
+  color: var(--accent-dark); 
+  text-transform: uppercase; 
+  letter-spacing: 2px;
+}
+
+.spin-trigger {
+  position: relative;
+  width: 100%;
+  background: var(--bg-dark);
+  color: white;
   border: none;
-  border-radius: 50px;
-  transition: all 0.2s;
+  padding: 22px;
+  border-radius: 24px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
-button:disabled {
-  background: #95a5a6;
+.spin-trigger:not(:disabled):hover {
+  background: var(--accent-dark);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(72, 149, 239, 0.2);
+}
+
+.spin-trigger:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 
-button.active:hover {
-  background: #f39c12;
-  transform: scale(1.05);
+/* --- Overlay --- */
+.modern-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(15px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button:focus {
-  outline: 3px solid white;
-  outline-offset: 4px;
+.image-frame img {
+  max-width: 85vw;
+  max-height: 75vh;
+  border-radius: 32px;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 80px rgba(72, 149, 239, 0.3);
 }
 
-.win-text {
-  color: #f1c40f;
-  text-shadow: 0 0 10px rgba(241, 196, 15, 0.8);
-  transform: scale(1.1);
+.ghost-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  margin-top: 25px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.ghost-btn:hover {
+  opacity: 1;
+  color: var(--accent-dark);
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 2rem; }
+  .machine-chassis { padding: 15px; border-radius: 35px; }
+  .auth-card { padding: 30px 20px; }
 }

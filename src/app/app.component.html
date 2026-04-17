@@ -1,62 +1,95 @@
-@if (!isAuthorized()) {
-<div class="auth-container">
-  <div class="lock-icon">🔐</div>
-  <h2>API Configuration</h2>
-  <p>Please enter your AI Service API Key to enable the prize generator.</p>
+<div class="modern-app-wrapper">
+  <div class="ambient-blob"></div>
 
-  <div class="input-group">
-    <input class="input" name="key" type="password" [value]="keyInput()" (input)="keyInput.set($any($event.target).value)"
-      (keyup.enter)="submitKey()" placeholder="sk-..." />
+  @if (!isAuthorized()) {
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-icon">🔐</div>
+      <h2>Cloud Access</h2>
+      <p>Connect your API key to start generating prizes.</p>
+    </div>
 
-    <button (click)="submitKey()">Connect Service</button>
+    <div class="form-group">
+      <input 
+        class="modern-input" 
+        type="password" 
+        [value]="keyInput()"
+        (input)="keyInput.set($any($event.target).value)" 
+        (keyup.enter)="submitKey()" 
+        placeholder="Enter API Key..." />
+      
+      <button class="primary-btn" (click)="submitKey()" [disabled]="!keyInput()">
+        Initialize Service
+      </button>
+    </div>
+    <p class="legal-notice">Keys are stored locally in your browser cache.</p>
   </div>
+  } 
 
-  <p class="hint">Your key is stored only in local memory and is never saved to our servers.</p>
-</div>
-} @else {
-<div class="game-container">
-  @if (imgUrl()) {
-  <div class="prize-display">
-    <img [src]="imgUrl()" (click)="clearImage()" alt="Your AI Generated Prize" />
-  </div>
-  }
   @else {
-  <h1>Where's Rufuss</h1>
-
-  <div class="reels-container">
-    @for (reelIndex of reels(); track $index) {
-    <div class="reel-window">
-      <div class="symbol-holder">
-
-        @if (isSpinning()) {
-        <div class="blur-strip">
-          @for (country of countries; track country.code) {
-          <div class="symbol-card">
-            <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'" [alt]="country.name">
-          </div>
-          }
+  <div class="game-layout">
+    
+    @if (imgUrl()) {
+    <div class="modern-overlay" (click)="clearImage()">
+      <div class="overlay-content">
+        <div class="image-frame">
+          <img [src]="imgUrl()" alt="AI Generated Prize" />
         </div>
-        }
-
-        @else {
-        <div class="static-symbol">
-          <img [src]="'https://flagcdn.com/w160/' + countries[reelIndex].code + '.png'"
-            [alt]="countries[reelIndex].name">
-        </div>
-        }
-
+        <p>TAP TO DISMISS</p>
       </div>
     </div>
     }
-  </div>
 
-  <div class="ui-section">
-    <h2 [class.win-text]="message().includes('WIN')">{{ message() }}</h2>
+    <div class="game-header">
+      <div class="chip">SPECIALZ EDITION</div>
+      <h1>Where's <span>Rufuss</span>?</h1>
+    </div>
 
-    <button #spinButton (click)="spin()" [disabled]="isSpinning() || imgUrl()" [class.active]="!isSpinning()">
-      {{ isSpinning() ? 'SPINNING...' : 'SPIN' }}
-    </button>
+    <div class="machine-chassis">
+      <div class="reels-grid">
+        @for (reelIndex of reels(); track $index) {
+        <div class="modern-reel">
+          <div class="reel-inner">
+            @if (isSpinning()) {
+              <div class="blur-animation">
+                @for (country of countries; track country.code) {
+                  <div class="symbol-cell">
+                    <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
+                  </div>
+                }
+                @for (country of countries; track country.code + '_loop') {
+                  <div class="symbol-cell">
+                    <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="final-symbol">
+                <img [src]="'https://flagcdn.com/w160/' + countries[reelIndex].code + '.png'">
+              </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="action-zone">
+      <div class="message-display">
+        <span [class.success]="message().includes('WIN')">{{ message() || 'Ready for takeoff?' }}</span>
+      </div>
+
+      <button 
+        class="spin-trigger" 
+        (click)="spin()" 
+        [disabled]="isSpinning() || !!imgUrl()"
+        [class.disabled-btn]="isSpinning() || !!imgUrl()">
+        <span class="label">{{ isSpinning() ? 'GENERATING...' : 'SPIN' }}</span>
+        <div class="btn-glow"></div>
+      </button>
+
+      <button class="ghost-btn" (click)="isAuthorized.set(false)">Change API Configuration</button>
+    </div>
   </div>
   }
 </div>
-}
