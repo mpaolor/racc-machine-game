@@ -56,7 +56,8 @@
         </span>
       </div>
 
-      <button #spinbutton class="spin-trigger" (click)="spin()" [disabled]="store.isSpinning() || !!imgUrl() || isLoadingImage()">
+      <button #spinbutton class="spin-trigger" (click)="spin()"
+        [disabled]="store.isSpinning() || !!imgUrl() || isLoadingImage()">
         <span class="label">{{ store.isSpinning() ? 'SPINNING...' : 'SPIN' }}</span>
       </button>
 

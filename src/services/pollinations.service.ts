@@ -22,9 +22,7 @@ export class PollinationsService {
     const expression =
       this.store.expressions[Math.floor(Math.random() * this.store.expressions.length)];
     const background =
-      this.store.backroundSynonyms[
-        Math.floor(Math.random() * this.store.backroundSynonyms.length)
-      ];
+      this.store.backroundSynonyms[Math.floor(Math.random() * this.store.backroundSynonyms.length)];
 
     const prompt = this.PROMPT.replace('{country}', country)
       .replace('{expression}', expression)
