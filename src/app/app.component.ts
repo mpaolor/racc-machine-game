@@ -16,7 +16,7 @@ export class AppComponent {
   isAuthorized = signal(false);
 
   // reference to the spin button for focus management
-  spinButton = viewChild<ElementRef<HTMLButtonElement>>('spinButton');
+  spinButton = viewChild<ElementRef<HTMLButtonElement>>('spinbutton');
 
   // ISO 3166-1 alpha-2 codes
   countries = [

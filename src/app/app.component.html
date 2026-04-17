@@ -10,25 +10,20 @@
     </div>
 
     <div class="form-group">
-      <input 
-        class="modern-input" 
-        type="password" 
-        [value]="keyInput()"
-        (input)="keyInput.set($any($event.target).value)" 
-        (keyup.enter)="submitKey()" 
-        placeholder="Enter API Key..." />
-      
+      <input class="modern-input" type="password" [value]="keyInput()" (input)="keyInput.set($any($event.target).value)"
+        (keyup.enter)="submitKey()" placeholder="Enter API Key..." />
+
       <button class="primary-btn" (click)="submitKey()" [disabled]="!keyInput()">
         Initialize Service
       </button>
     </div>
     <p class="legal-notice">Keys are stored locally in your browser cache.</p>
   </div>
-  } 
+  }
 
   @else {
   <div class="game-layout">
-    
+
     @if (imgUrl()) {
     <div class="modern-overlay" (click)="clearImage()">
       <div class="overlay-content">
@@ -51,22 +46,22 @@
         <div class="modern-reel">
           <div class="reel-inner">
             @if (isSpinning()) {
-              <div class="blur-animation">
-                @for (country of countries; track country.code) {
-                  <div class="symbol-cell">
-                    <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
-                  </div>
-                }
-                @for (country of countries; track country.code + '_loop') {
-                  <div class="symbol-cell">
-                    <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
-                  </div>
-                }
+            <div class="blur-animation">
+              @for (country of countries; track country.code) {
+              <div class="symbol-cell">
+                <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
               </div>
+              }
+              @for (country of countries; track country.code + '_loop') {
+              <div class="symbol-cell">
+                <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
+              </div>
+              }
+            </div>
             } @else {
-              <div class="final-symbol">
-                <img [src]="'https://flagcdn.com/w160/' + countries[reelIndex].code + '.png'">
-              </div>
+            <div class="final-symbol">
+              <img [src]="'https://flagcdn.com/w160/' + countries[reelIndex].code + '.png'">
+            </div>
             }
           </div>
         </div>
@@ -79,11 +74,8 @@
         <span [class.success]="message().includes('WIN')">{{ message() || 'Ready for takeoff?' }}</span>
       </div>
 
-      <button 
-        class="spin-trigger" 
-        (click)="spin()" 
-        [disabled]="isSpinning() || !!imgUrl() || isLoadingImage()"
-        [class.disabled-btn]="isSpinning() || !!imgUrl()">
+      <button #spinbutton class="spin-trigger" (click)="spin()"
+        [disabled]="isSpinning() || !!imgUrl() || isLoadingImage()" [class.disabled-btn]="isSpinning() || !!imgUrl()">
         <span class="label">{{ isSpinning() ? 'GENERATING...' : 'SPIN' }}</span>
         <div class="btn-glow"></div>
       </button>
