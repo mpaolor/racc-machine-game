@@ -1,36 +1,62 @@
+@if (!isAuthorized()) {
+<div class="auth-container">
+  <div class="lock-icon">🔐</div>
+  <h2>API Configuration</h2>
+  <p>Please enter your AI Service API Key to enable the prize generator.</p>
+
+  <div class="input-group">
+    <input class="input" name="key" type="password" [value]="keyInput()" (input)="keyInput.set($any($event.target).value)"
+      (keyup.enter)="submitKey()" placeholder="sk-..." />
+
+    <button (click)="submitKey()">Connect Service</button>
+  </div>
+
+  <p class="hint">Your key is stored only in local memory and is never saved to our servers.</p>
+</div>
+} @else {
 <div class="game-container">
-  <h1>Racc Slot Machine</h1>
+  @if (imgUrl()) {
+  <div class="prize-display">
+    <img [src]="imgUrl()" (click)="clearImage()" alt="Your AI Generated Prize" />
+  </div>
+  }
+  @else {
+  <h1>Where's Rufuss</h1>
 
   <div class="reels-container">
-    @for (symbolIndex of reels(); track $index) {
-      <div class="reel-window">
-        <div class="symbol-holder">
-          @if (isSpinning()) {
-            <div class="blur-strip">
-              @for (s of symbols; track $index) {
-                <div class="symbol-card">{{ s }}</div>
-              }
-              <div class="symbol-card">{{ symbols[0] }}</div>
-            </div>
-          } @else {
-            <div class="static-symbol">
-              {{ symbols[symbolIndex] }}
-            </div>
+    @for (reelIndex of reels(); track $index) {
+    <div class="reel-window">
+      <div class="symbol-holder">
+
+        @if (isSpinning()) {
+        <div class="blur-strip">
+          @for (country of countries; track country.code) {
+          <div class="symbol-card">
+            <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'" [alt]="country.name">
+          </div>
           }
         </div>
+        }
+
+        @else {
+        <div class="static-symbol">
+          <img [src]="'https://flagcdn.com/w160/' + countries[reelIndex].code + '.png'"
+            [alt]="countries[reelIndex].name">
+        </div>
+        }
+
       </div>
+    </div>
     }
   </div>
 
   <div class="ui-section">
     <h2 [class.win-text]="message().includes('WIN')">{{ message() }}</h2>
-    
-    <button 
-      #spinButton 
-      (click)="spin()" 
-      [disabled]="isSpinning()"
-      [class.active]="!isSpinning()">
+
+    <button #spinButton (click)="spin()" [disabled]="isSpinning() || imgUrl()" [class.active]="!isSpinning()">
       {{ isSpinning() ? 'SPINNING...' : 'SPIN' }}
     </button>
   </div>
+  }
 </div>
+}

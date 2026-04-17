@@ -1,0 +1,11 @@
+{
+  "/v1beta": {
+    "target": "https://generativelanguage.googleapis.com",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/v1beta": "/v1beta"
+    },
+    "logLevel": "debug"
+  }
+}
