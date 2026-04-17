@@ -3,6 +3,7 @@ import { forkJoin, timer } from 'rxjs';
 
 import { AiConnectComponent } from './components/ai-connect.component';
 import { AppStore } from './state/app.store';
+import { CountrySelectComponent } from './components/country-select.component';
 import { PollinationsService } from '../services/pollinations.service';
 import confetti from 'canvas-confetti';
 
@@ -11,7 +12,7 @@ import confetti from 'canvas-confetti';
   standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [AiConnectComponent],
+  imports: [AiConnectComponent, CountrySelectComponent],
 })
 export class AppComponent {
   private aiService = inject(PollinationsService);
@@ -53,9 +54,9 @@ export class AppComponent {
 
     // Determine results immediately (The "Source of Truth")
     const newResults = [
-      Math.floor(Math.random() * this.store.countries().length),
-      Math.floor(Math.random() * this.store.countries().length),
-      Math.floor(Math.random() * this.store.countries().length),
+      Math.floor(Math.random() * this.store.selectedCountries().length),
+      Math.floor(Math.random() * this.store.selectedCountries().length),
+      Math.floor(Math.random() * this.store.selectedCountries().length),
     ];
 
     // Wait for the "Fake" animation to finish
@@ -107,7 +108,7 @@ export class AppComponent {
 
       this.isLoadingImage.set(true);
 
-      const country = this.store.countries()[results[0]].name;
+      const country = this.store.selectedCountries()[results[0]].name;
 
       const imageRequest$ = this.aiService.getImage(country);
       const minDelay$ = timer(1000);

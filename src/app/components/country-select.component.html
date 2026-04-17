@@ -1,0 +1,50 @@
+<div class="selection-view">
+  <header class="selection-header">
+    <div class="status-badge">Step 2 of 3</div>
+    <h1>Choose 7 Countries</h1>
+    <p>These will be the symbols on your slot machine.</p>
+
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Search for a country..." 
+        (input)="handleSearch($event)"
+        class="modern-search">
+    </div>
+
+    <div class="selection-counter" [class.ready]="store.selectedCountries().length === 7">
+      <span>{{ store.selectedCountries().length }}</span> / 7 Selected
+    </div>
+  </header>
+
+  <div class="scroll-area">
+    <div class="grid-layout">
+      @for (country of filteredCountries(); track country.code) {
+        <button 
+          class="country-tile" 
+          [class.active]="isSelected(country)"
+          [disabled]="!isSelected(country) && store.selectedCountries().length === 7"
+          (click)="toggleCountry(country)">
+          
+          <div class="flag-container">
+            <img [src]="'https://flagcdn.com/w160/' + country.code + '.png'" loading="lazy">
+          </div>
+          <span class="label">{{ country.name }}</span>
+          
+          @if (isSelected(country)) {
+            <div class="check-overlay">✓</div>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+  <footer class="sticky-footer">
+    <!-- <button 
+      class="action-btn" 
+      [disabled]="store.selectedCountries().length !== 7"
+      (click)="goToPlay()">
+      PROCEED TO GAME
+    </button> -->
+  </footer>
+</div>

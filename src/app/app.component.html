@@ -4,7 +4,9 @@
   @if (!store.isAuthorized()) {
   <app-ai-connect></app-ai-connect>
   }
-
+  @else if (store.selectedCountries().length !== 7 ) {
+  <app-country-select></app-country-select>
+  }
   @else {
   <div class="game-layout">
     @if (imgUrl()) {
@@ -30,7 +32,7 @@
           <div class="reel-inner">
             @if (store.isSpinning()) {
             <div class="blur-animation">
-              @for (country of store.countries(); track country.code) {
+              @for (country of store.selectedCountries(); track country.code) {
               <div class="symbol-cell">
                 <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
               </div>
@@ -38,7 +40,7 @@
             </div>
             } @else {
             <div class="final-symbol">
-              <img [src]="'https://flagcdn.com/w160/' + store.countries()[reelIndex].code + '.png'">
+              <img [src]="'https://flagcdn.com/w160/' + store.selectedCountries()[reelIndex].code + '.png'">
             </div>
             }
           </div>
@@ -58,7 +60,7 @@
         <span class="label">{{ store.isSpinning() ? 'SPINNING...' : 'SPIN' }}</span>
       </button>
 
-      <button class="ghost-btn" (click)="store.removeApiKey()">Change API Configuration</button>
+      <button class="ghost-btn" (click)="store.resetGame()">Reset Game</button>
     </div>
   </div>
   }
