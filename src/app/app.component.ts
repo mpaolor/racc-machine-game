@@ -1,7 +1,16 @@
-import { Component, ElementRef, afterNextRender, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  afterNextRender,
+  effect,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { forkJoin, timer } from 'rxjs';
 
-import { AppStore } from '../state/app.store';
+import { AiConnectComponent } from './components/ai-connect.component';
+import { AppStore } from './state/app.store';
 import { PollinationsService } from '../services/pollinations.service';
 
 @Component({
@@ -9,18 +18,21 @@ import { PollinationsService } from '../services/pollinations.service';
   standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  imports: [AiConnectComponent],
 })
 export class AppComponent {
   private aiService = inject(PollinationsService);
   public store = inject(AppStore);
+
+  // dom references
+  // reference to the spin button for focus management
+  spinButton = viewChild<ElementRef<HTMLButtonElement>>('spinbutton');
 
   // signals
   reels = signal<number[]>([0, 1, 2]);
   message = signal('Press Space or Click to Spin!');
   imgUrl = signal<string | null>(null);
   isLoadingImage = signal(false);
-  // reference to the spin button for focus management
-  spinButton = viewChild<ElementRef<HTMLButtonElement>>('spinbutton');
 
   // static data
   // ISO 3166-1 alpha-2 codes
@@ -37,28 +49,24 @@ export class AppComponent {
   backroundSynonyms = ['landmark', 'monument', 'famous place', 'tourist attraction', 'cityscape'];
 
   constructor() {
-    // Initial focus so user can play immediately
-    afterNextRender(() => {
-      this.spinButton()?.nativeElement.focus();
+    // 2. The effect runs whenever the signals inside it change
+    effect(() => {
+      const isAuth = this.store.isAuthorized();
+      const button = this.spinButton();
+
+      // If we are authorized and the button has appeared in the DOM
+      if (isAuth && button) {
+        // Use a tiny timeout or requestAnimationFrame to ensure the
+        // browser has finished painting the new UI before focusing
+        requestAnimationFrame(() => {
+          console.log('Focusing spin button after authorization');
+          button.nativeElement.focus();
+        });
+      }
     });
   }
 
-  public submitKey(inputValue?: string) {
-    const key = inputValue ? inputValue.trim() : '';
-    // Basic validation: ensure it's not empty and meets a minimum length
-    if (key.length > 20) {
-      this.store.setApiKey(key);
-
-      // Refocus the button so Spacebar works immediately after entering the key
-      setTimeout(() => {
-        this.spinButton()?.nativeElement.focus();
-      }, 0);
-    } else {
-      alert('Please enter a valid API Key.');
-    }
-  }
-
-  spin() {
+  public spin() {
     if (this.store.isSpinning()) return;
 
     this.store.startSpin();
@@ -77,14 +85,14 @@ export class AppComponent {
       this.store.stopSpin();
       this.checkWin(newResults);
 
-      // 3. Refocus the button so Spacebar works for the next spin
+      // Refocus the button so Spacebar works for the next spin
       setTimeout(() => {
         this.spinButton()?.nativeElement.focus();
       }, 0);
     }, 1200);
   }
 
-  checkWin(results: number[]) {
+  private checkWin(results: number[]) {
     // Check if all three symbols are the same
     if (results[0] === results[1] && results[1] === results[2]) {
       this.message.set('You Win! Please wait while we generate your prize...');
@@ -95,7 +103,6 @@ export class AppComponent {
       const expression = this.expressions[Math.floor(Math.random() * this.expressions.length)];
       const background =
         this.backroundSynonyms[Math.floor(Math.random() * this.backroundSynonyms.length)];
-      console.log(`Player won with country: ${country}`);
 
       const imageRequest$ = this.aiService.getImage(country, expression, background);
       const minDelay$ = timer(1000);
@@ -119,7 +126,7 @@ export class AppComponent {
     }
   }
 
-  clearImage() {
+  public clearImage() {
     if (this.imgUrl()) {
       URL.revokeObjectURL(this.imgUrl()!);
       this.imgUrl.set(null);

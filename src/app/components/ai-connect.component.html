@@ -1,0 +1,17 @@
+<div class="auth-card">
+    <div class="auth-header">
+        <div class="auth-icon">🔐</div>
+        <h2>AI Access</h2>
+        <p>Connect your Pollination API key to start generating prizes.</p>
+    </div>
+
+    <div class="form-group">
+        <input class="modern-input" #keyinput type="password" (keyup.enter)="submitKey(keyinput.value)"
+            placeholder="Enter API Key..." />
+
+        <button class="primary-btn" (click)="submitKey(keyinput.value)">
+            Initialize Service
+        </button>
+    </div>
+    <p class="legal-notice">Keys are stored locally in your browser cache.</p>
+</div>

@@ -1,0 +1,44 @@
+.auth-card {
+    position: relative;
+    z-index: 10;
+    background: var(--glass);
+    backdrop-filter: blur(25px);
+    padding: 40px;
+    border-radius: 32px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.modern-input {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    border: 2px solid #e2e8f0;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+.primary-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent-dark) 0%, #3f37c9 100%);
+    color: #fff;
+    border: none;
+    padding: 18px;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 20px -5px rgba(63, 55, 201, 0.3);
+}
+
+.primary-btn:disabled {
+    background: #cbd5e1;
+    box-shadow: none;
+}

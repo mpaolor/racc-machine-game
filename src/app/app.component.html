@@ -2,23 +2,7 @@
   <div class="ambient-blob"></div>
 
   @if (!store.isAuthorized()) {
-  <div class="auth-card">
-    <div class="auth-header">
-      <div class="auth-icon">🔐</div>
-      <h2>Cloud Access</h2>
-      <p>Connect your API key to start generating prizes.</p>
-    </div>
-
-    <div class="form-group">
-      <input class="modern-input" #keyinput type="password" (keyup.enter)="submitKey(keyinput.value)"
-        placeholder="Enter API Key..." />
-
-      <button class="primary-btn" (click)="submitKey(keyinput.value)">
-        Initialize Service
-      </button>
-    </div>
-    <p class="legal-notice">Keys are stored locally in your browser cache.</p>
-  </div>
+  <app-ai-connect></app-ai-connect>
   }
 
   @else {
@@ -70,7 +54,7 @@
         </span>
       </div>
 
-      <button class="spin-trigger" (click)="spin()" [disabled]="store.isSpinning() || !!imgUrl() || isLoadingImage()">
+      <button #spinbutton class="spin-trigger" (click)="spin()" [disabled]="store.isSpinning() || !!imgUrl() || isLoadingImage()">
         <span class="label">{{ store.isSpinning() ? 'SPINNING...' : 'SPIN' }}</span>
       </button>
 
