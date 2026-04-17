@@ -82,7 +82,7 @@
       <button 
         class="spin-trigger" 
         (click)="spin()" 
-        [disabled]="isSpinning() || !!imgUrl()"
+        [disabled]="isSpinning() || !!imgUrl() || isLoadingImage()"
         [class.disabled-btn]="isSpinning() || !!imgUrl()">
         <span class="label">{{ isSpinning() ? 'GENERATING...' : 'SPIN' }}</span>
         <div class="btn-glow"></div>

@@ -36,7 +36,7 @@ export class AppComponent {
   message = signal('Press Space or Click to Spin!');
 
   imgUrl = signal<string | null>(null);
-  isLoadingImage = false;
+  isLoadingImage = signal(false);
 
   constructor() {
     // Initial focus so user can play immediately
@@ -92,6 +92,8 @@ export class AppComponent {
     if (results[0] === results[1] && results[1] === results[2]) {
       this.message.set('You Win! Please wait while we generate your prize...');
 
+      this.isLoadingImage.set(true);
+
       const country = this.countries[results[0]].name;
       const expression = this.expressions[Math.floor(Math.random() * this.expressions.length)];
       const background =
@@ -107,10 +109,12 @@ export class AppComponent {
             const imageUrl = URL.createObjectURL(blob);
             this.imgUrl.set(imageUrl);
           }
+          this.isLoadingImage.set(false);
         },
         error: (err) => {
           this.message.set('Oops! We could not get your prize.');
           console.error(err);
+          this.isLoadingImage.set(false);
         },
       });
     } else {
