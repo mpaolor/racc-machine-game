@@ -23,10 +23,8 @@ export class AppStore {
 
   // Public actions
   public setApiKey(key: string) {
-    if (key.trim().length > 20) {
       localStorage.setItem(this.API_KEY_STORAGE_KEY, key);
       this.state.update((s) => ({ ...s, apiKey: key }));
-    }
   }
 
   public removeApiKey() {

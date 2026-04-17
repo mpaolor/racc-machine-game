@@ -1,7 +1,7 @@
 <div class="modern-app-wrapper">
   <div class="ambient-blob"></div>
 
-  @if (!isAuthorized()) {
+  @if (!store.isAuthorized()) {
   <div class="auth-card">
     <div class="auth-header">
       <div class="auth-icon">🔐</div>
@@ -10,10 +10,10 @@
     </div>
 
     <div class="form-group">
-      <input class="modern-input" type="password" [value]="keyInput()" (input)="keyInput.set($any($event.target).value)"
-        (keyup.enter)="submitKey()" placeholder="Enter API Key..." />
+      <input class="modern-input" #keyinput type="password" (keyup.enter)="submitKey(keyinput.value)"
+        placeholder="Enter API Key..." />
 
-      <button class="primary-btn" (click)="submitKey()" [disabled]="!keyInput()">
+      <button class="primary-btn" (click)="submitKey(keyinput.value)">
         Initialize Service
       </button>
     </div>
@@ -23,7 +23,6 @@
 
   @else {
   <div class="game-layout">
-
     @if (imgUrl()) {
     <div class="modern-overlay" (click)="clearImage()">
       <div class="overlay-content">
@@ -36,7 +35,7 @@
     }
 
     <div class="game-header">
-      <div class="chip">SPECIALZ EDITION</div>
+      <div class="chip">SPECIALZZ EDITION</div>
       <h1>Where's <span>Rufuss</span>?</h1>
     </div>
 
@@ -45,14 +44,9 @@
         @for (reelIndex of reels(); track $index) {
         <div class="modern-reel">
           <div class="reel-inner">
-            @if (isSpinning()) {
+            @if (store.isSpinning()) {
             <div class="blur-animation">
               @for (country of countries; track country.code) {
-              <div class="symbol-cell">
-                <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
-              </div>
-              }
-              @for (country of countries; track country.code + '_loop') {
               <div class="symbol-cell">
                 <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
               </div>
@@ -71,16 +65,16 @@
 
     <div class="action-zone">
       <div class="message-display">
-        <span [class.success]="message().includes('WIN')">{{ message() || 'Ready for takeoff?' }}</span>
+        <span [class.success]="message().includes('WIN')">
+          {{ message() || 'Ready for takeoff?' }}
+        </span>
       </div>
 
-      <button #spinbutton class="spin-trigger" (click)="spin()"
-        [disabled]="isSpinning() || !!imgUrl() || isLoadingImage()" [class.disabled-btn]="isSpinning() || !!imgUrl()">
-        <span class="label">{{ isSpinning() ? 'GENERATING...' : 'SPIN' }}</span>
-        <div class="btn-glow"></div>
+      <button class="spin-trigger" (click)="spin()" [disabled]="store.isSpinning() || !!imgUrl() || isLoadingImage()">
+        <span class="label">{{ store.isSpinning() ? 'SPINNING...' : 'SPIN' }}</span>
       </button>
 
-      <button class="ghost-btn" (click)="isAuthorized.set(false)">Change API Configuration</button>
+      <button class="ghost-btn" (click)="store.removeApiKey()">Change API Configuration</button>
     </div>
   </div>
   }

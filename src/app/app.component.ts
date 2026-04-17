@@ -1,6 +1,7 @@
 import { Component, ElementRef, afterNextRender, inject, signal, viewChild } from '@angular/core';
 import { forkJoin, timer } from 'rxjs';
 
+import { AppStore } from '../state/app.store';
 import { PollinationsService } from '../services/pollinations.service';
 
 @Component({
@@ -11,13 +12,17 @@ import { PollinationsService } from '../services/pollinations.service';
 })
 export class AppComponent {
   private aiService = inject(PollinationsService);
+  public store = inject(AppStore);
 
-  keyInput = signal('');
-  isAuthorized = signal(false);
-
+  // signals
+  reels = signal<number[]>([0, 1, 2]);
+  message = signal('Press Space or Click to Spin!');
+  imgUrl = signal<string | null>(null);
+  isLoadingImage = signal(false);
   // reference to the spin button for focus management
   spinButton = viewChild<ElementRef<HTMLButtonElement>>('spinbutton');
 
+  // static data
   // ISO 3166-1 alpha-2 codes
   countries = [
     { code: 'us', name: 'USA' },
@@ -31,13 +36,6 @@ export class AppComponent {
   expressions = ['happy', 'cute', 'hungry', 'surprised', 'sleepy'];
   backroundSynonyms = ['landmark', 'monument', 'famous place', 'tourist attraction', 'cityscape'];
 
-  reels = signal<number[]>([0, 1, 2]);
-  isSpinning = signal(false);
-  message = signal('Press Space or Click to Spin!');
-
-  imgUrl = signal<string | null>(null);
-  isLoadingImage = signal(false);
-
   constructor() {
     // Initial focus so user can play immediately
     afterNextRender(() => {
@@ -45,12 +43,11 @@ export class AppComponent {
     });
   }
 
-  submitKey() {
-    const key = this.keyInput().trim();
+  public submitKey(inputValue?: string) {
+    const key = inputValue ? inputValue.trim() : '';
     // Basic validation: ensure it's not empty and meets a minimum length
     if (key.length > 20) {
-      this.aiService.setApiKey(key);
-      this.isAuthorized.set(true);
+      this.store.setApiKey(key);
 
       // Refocus the button so Spacebar works immediately after entering the key
       setTimeout(() => {
@@ -62,9 +59,9 @@ export class AppComponent {
   }
 
   spin() {
-    if (this.isSpinning()) return;
+    if (this.store.isSpinning()) return;
 
-    this.isSpinning.set(true);
+    this.store.startSpin();
     this.message.set('Spinning...');
 
     // Determine results immediately (The "Source of Truth")
@@ -77,7 +74,7 @@ export class AppComponent {
     // Wait for the "Fake" animation to finish
     setTimeout(() => {
       this.reels.set(newResults);
-      this.isSpinning.set(false);
+      this.store.stopSpin();
       this.checkWin(newResults);
 
       // 3. Refocus the button so Spacebar works for the next spin
