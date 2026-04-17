@@ -9,19 +9,22 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PollinationsService {
   private http = inject(HttpClient);
-  private appStore = inject(AppStore);
+  private store = inject(AppStore);
 
   private readonly API_URL = 'https://gen.pollinations.ai/image';
   private readonly PROMPT =
     'Create a cartoon styled raccoon with a {expression} expression and a {background} from {country}';
 
-  public getImage(
-    country: string,
-    expression: string,
-    background: string,
-  ): Observable<Blob | null> {
-    const key = this.appStore.apiKey();
+  public getImage(country: string): Observable<Blob | null> {
+    const key = this.store.apiKey();
     if (!key) throw new Error('API Key missing!');
+
+    const expression =
+      this.store.expressions()[Math.floor(Math.random() * this.store.expressions().length)];
+    const background =
+      this.store.backroundSynonyms()[
+        Math.floor(Math.random() * this.store.backroundSynonyms().length)
+      ];
 
     const prompt = this.PROMPT.replace('{country}', country)
       .replace('{expression}', expression)

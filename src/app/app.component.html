@@ -30,7 +30,7 @@
           <div class="reel-inner">
             @if (store.isSpinning()) {
             <div class="blur-animation">
-              @for (country of countries; track country.code) {
+              @for (country of store.countries(); track country.code) {
               <div class="symbol-cell">
                 <img [src]="'https://flagcdn.com/w80/' + country.code + '.png'">
               </div>
@@ -38,7 +38,7 @@
             </div>
             } @else {
             <div class="final-symbol">
-              <img [src]="'https://flagcdn.com/w160/' + countries[reelIndex].code + '.png'">
+              <img [src]="'https://flagcdn.com/w160/' + store.countries()[reelIndex].code + '.png'">
             </div>
             }
           </div>

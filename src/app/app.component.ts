@@ -1,17 +1,10 @@
-import {
-  Component,
-  ElementRef,
-  afterNextRender,
-  effect,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, ElementRef, effect, inject, signal, viewChild } from '@angular/core';
 import { forkJoin, timer } from 'rxjs';
 
 import { AiConnectComponent } from './components/ai-connect.component';
 import { AppStore } from './state/app.store';
 import { PollinationsService } from '../services/pollinations.service';
+import confetti from 'canvas-confetti';
 
 @Component({
   selector: 'app-root',
@@ -33,20 +26,6 @@ export class AppComponent {
   message = signal('Press Space or Click to Spin!');
   imgUrl = signal<string | null>(null);
   isLoadingImage = signal(false);
-
-  // static data
-  // ISO 3166-1 alpha-2 codes
-  countries = [
-    { code: 'us', name: 'USA' },
-    { code: 'it', name: 'Italy' },
-    { code: 'jp', name: 'Japan' },
-    { code: 'es', name: 'Spain' },
-    { code: 'fr', name: 'France' },
-    { code: 'gb', name: 'UK' },
-    { code: 'mx', name: 'Mexico' },
-  ];
-  expressions = ['happy', 'cute', 'hungry', 'surprised', 'sleepy'];
-  backroundSynonyms = ['landmark', 'monument', 'famous place', 'tourist attraction', 'cityscape'];
 
   constructor() {
     // 2. The effect runs whenever the signals inside it change
@@ -74,9 +53,9 @@ export class AppComponent {
 
     // Determine results immediately (The "Source of Truth")
     const newResults = [
-      Math.floor(Math.random() * this.countries.length),
-      Math.floor(Math.random() * this.countries.length),
-      Math.floor(Math.random() * this.countries.length),
+      Math.floor(Math.random() * this.store.countries().length),
+      Math.floor(Math.random() * this.store.countries().length),
+      Math.floor(Math.random() * this.store.countries().length),
     ];
 
     // Wait for the "Fake" animation to finish
@@ -92,19 +71,45 @@ export class AppComponent {
     }, 1200);
   }
 
+  private launchConfetti() {
+    const duration = 3 * 1000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 }, // Left side
+        colors: ['#a2d2ff', '#4895ef', '#ffffff'],
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 }, // Right side
+        colors: ['#a2d2ff', '#4895ef', '#ffffff'],
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
+  }
+
   private checkWin(results: number[]) {
     // Check if all three symbols are the same
     if (results[0] === results[1] && results[1] === results[2]) {
+      this.launchConfetti();
+
       this.message.set('You Win! Please wait while we generate your prize...');
 
       this.isLoadingImage.set(true);
 
-      const country = this.countries[results[0]].name;
-      const expression = this.expressions[Math.floor(Math.random() * this.expressions.length)];
-      const background =
-        this.backroundSynonyms[Math.floor(Math.random() * this.backroundSynonyms.length)];
+      const country = this.store.countries()[results[0]].name;
 
-      const imageRequest$ = this.aiService.getImage(country, expression, background);
+      const imageRequest$ = this.aiService.getImage(country);
       const minDelay$ = timer(1000);
 
       forkJoin([imageRequest$, minDelay$]).subscribe({
