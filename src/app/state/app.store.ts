@@ -81,6 +81,13 @@ export class AppStore {
     }));
   }
 
+  public changeCountries() {
+    this.state.update((s) => ({
+      ...s,
+      selectedCountries: [],
+    }));
+  }
+
   // static data for prompt generation
   readonly expressions = ['happy', 'cute', 'hungry', 'surprised', 'sleepy'];
   readonly backroundSynonyms = [

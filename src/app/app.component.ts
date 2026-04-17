@@ -68,7 +68,7 @@ export class AppComponent {
       // Refocus the button so Spacebar works for the next spin
       setTimeout(() => {
         this.spinButton()?.nativeElement.focus();
-      }, 0);
+      }, 1);
     }, 1200);
   }
 
