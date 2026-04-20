@@ -137,10 +137,8 @@ export class AppComponent {
       URL.revokeObjectURL(this.imgUrl()!);
       this.imgUrl.set(null);
 
-      setTimeout(() => {
-        this.spinButton()?.nativeElement.focus();
-        this.message.set('Press Space or Click to Spin!');
-      }, 0);
+      // reset countries
+      this.store.changeCountries();
     }
   }
 }

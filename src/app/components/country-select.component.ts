@@ -30,7 +30,7 @@ export class CountrySelectComponent implements OnInit {
     this.http.get<Record<string, string>>('https://flagcdn.com/en/codes.json').subscribe((data) => {
       const list = Object.entries(data)
         .map(([code, name]) => ({ name, code }))
-        .filter((c) => !c.code.includes('us-')); // Clean out non-country codes
+        .filter((c) => !c.code.includes('us-') && c.code !== 'il'); // Clean out non-country codes
       this.allCountries.set(list);
     });
   }
