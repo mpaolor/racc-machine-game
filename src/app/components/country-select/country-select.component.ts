@@ -2,7 +2,7 @@ import { AppStore, Country } from '../../state/app.store';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { FlagsService } from '../../services/flags.service';
 
 @Component({
   selector: 'app-country-select',
@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./country-select.component.css'],
 })
 export class CountrySelectComponent implements OnInit {
-  private http = inject(HttpClient);
+  private flagsService = inject(FlagsService);
   protected store = inject(AppStore);
 
   // Component-only state
@@ -26,12 +26,8 @@ export class CountrySelectComponent implements OnInit {
   });
 
   ngOnInit() {
-    // TODO: move to dedicated service
-    this.http.get<Record<string, string>>('https://flagcdn.com/en/codes.json').subscribe((data) => {
-      const list = Object.entries(data)
-        .map(([code, name]) => ({ name, code }))
-        .filter((c) => !c.code.includes('us-') && c.code !== 'il'); // Clean out non-country codes
-      this.allCountries.set(list);
+    this.flagsService.fetchCountries().subscribe((countries: Country[]) => {
+      this.allCountries.set(countries);
     });
   }
 
