@@ -9,6 +9,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PollinationsService {
   private http = inject(HttpClient);
+
+  // probably not the cleanest way to do this but 
+  // it keeps the logic in one place for now
   private store = inject(AppStore);
 
   private readonly API_URL = 'https://gen.pollinations.ai/image';
