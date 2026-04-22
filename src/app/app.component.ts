@@ -1,9 +1,9 @@
 import { Component, ElementRef, effect, inject, signal, viewChild } from '@angular/core';
 import { forkJoin, timer } from 'rxjs';
 
-import { AiConnectComponent } from './components/ai-connect.component';
+import { AiConnectComponent } from './components/ai-connect/ai-connect.component';
 import { AppStore } from './state/app.store';
-import { CountrySelectComponent } from './components/country-select.component';
+import { CountrySelectComponent } from './components/country-select/country-select.component';
 import { PollinationsService } from '../services/pollinations.service';
 import confetti from 'canvas-confetti';
 

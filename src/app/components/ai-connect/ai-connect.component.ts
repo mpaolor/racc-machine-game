@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 
-import { AppStore } from '../state/app.store';
+import { AppStore } from '../../state/app.store';
 
 @Component({
   selector: 'app-ai-connect',

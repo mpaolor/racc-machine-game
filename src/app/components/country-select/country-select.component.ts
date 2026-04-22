@@ -1,5 +1,5 @@
-import { AppStore, Country } from '../state/app.store';
-import { Component, OnInit, computed, inject, output, signal } from '@angular/core';
+import { AppStore, Country } from '../../state/app.store';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
