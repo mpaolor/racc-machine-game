@@ -1,7 +1,7 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { Observable, catchError, firstValueFrom, from, map, of, retry } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
 
-import { AppStore } from '../app/state/app.store';
+import { AppStore } from '../state/app.store';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
